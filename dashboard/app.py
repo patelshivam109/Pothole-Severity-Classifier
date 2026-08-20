@@ -194,8 +194,10 @@ header {visibility: hidden;}
 """, unsafe_allow_html=True)
 
 
+import joblib
+
 # ═══════════════════════════════════════════════════
-# DATA LOADING
+# DATA LOADING & INFERENCE
 # ═══════════════════════════════════════════════════
 @st.cache_data
 def load_data():
@@ -207,6 +209,15 @@ def load_data():
     return df, imgs, costs, meta
 
 df, image_df, cost_summary, meta = load_data()
+
+# Model for inference
+try:
+    svm_model = joblib.load(os.path.join(PROJECT_ROOT, 'models/final/final_model.pkl'))
+    scaler = joblib.load(os.path.join(PROJECT_ROOT, 'models/scaler.pkl'))
+except:
+    svm_model = None
+    scaler = None
+
 
 # ── Plotly color palette ──
 COLORS = {
@@ -234,6 +245,43 @@ PLOTLY_LAYOUT = dict(
 # SIDEBAR
 # ═══════════════════════════════════════════════════
 with st.sidebar:
+    st.markdown("## 📤 Upload Dataset")
+    uploaded_file = st.file_uploader("Upload CSV for Inference", type="csv")
+    
+    if uploaded_file is not None and svm_model is not None:
+        try:
+            udf = pd.read_csv(uploaded_file)
+            
+            # Require geometric features
+            features = ['bbox_width', 'bbox_height', 'bbox_area', 'rel_bbox_width', 'rel_bbox_height', 'rel_bbox_area', 'bbox_aspect_ratio', 'log_bbox_area']
+            if all(f in udf.columns for f in features):
+                X_scaled = scaler.transform(udf[features])
+                udf['predicted_severity'] = svm_model.predict(X_scaled)
+                probs = svm_model.predict_proba(X_scaled)
+                
+                # Assume classes are ['major_pothole', 'medium_pothole', 'minor_pothole'] based on model.classes_
+                cls_idx = {c: i for i, c in enumerate(svm_model.classes_)}
+                if 'major_pothole' in cls_idx:
+                    udf['prediction_confidence'] = probs.max(axis=1)
+                    udf['priority_score'] = (
+                        3 * probs[:, cls_idx.get('major_pothole', 0)] +
+                        2 * probs[:, cls_idx.get('medium_pothole', 1)] +
+                        1 * probs[:, cls_idx.get('minor_pothole', 2)]
+                    )
+                    
+                    udf['priority_category'] = udf['priority_score'].apply(
+                        lambda s: 'CRITICAL' if s >= 2.6 else ('HIGH' if s >= 2.0 else ('MEDIUM' if s >= 1.4 else 'LOW'))
+                    )
+                    udf['review_required'] = udf['prediction_confidence'] < 0.45
+                    
+                    # Update df for the rest of the app
+                    df = udf.copy()
+                    st.success("✅ Dataset Processed!")
+            else:
+                st.error("Missing required geometric features in CSV.")
+        except Exception as e:
+            st.error(f"Error processing file: {e}")
+            
     st.markdown("## 🛣️ Filters")
     st.markdown("---")
 
