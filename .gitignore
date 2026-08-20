@@ -1,0 +1,51 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Streamlit
+.streamlit/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Desktop.ini
+
+# ==========================================
+# Project Specific
+# ==========================================
+# Note: By default, datasets, models, and outputs are TRACKED 
+# so that your mentor can see your final deliverables on GitHub.
+# If you get a "file too large" error from GitHub (over 100MB), 
+# uncomment the lines below to ignore them:
+
+# dataset/raw/
+# dataset/processed/
+# outputs/
+# models/
+# *.csv
+# *.joblib
