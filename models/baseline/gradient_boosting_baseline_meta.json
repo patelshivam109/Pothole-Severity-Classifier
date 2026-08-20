@@ -1,0 +1,7 @@
+{
+    "model": "Gradient Boosting",
+    "feature_set": "bounding_box_derived",
+    "training_data": "X_train (70% group split)",
+    "validation_data": "X_valid (15% group split)",
+    "random_state": 42
+}

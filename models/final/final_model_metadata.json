@@ -1,0 +1,25 @@
+{
+    "selected_model": "Support Vector Machine",
+    "training_methodology": "Train+Validation combination after selection",
+    "primary_optimization_metric": "Macro F1",
+    "validation_macro_f1": 0.6555238275894115,
+    "final_test_accuracy": 0.654275092936803,
+    "final_test_macro_f1": 0.651443816698054,
+    "feature_list": [
+        "bbox_width",
+        "bbox_height",
+        "bbox_area",
+        "rel_bbox_width",
+        "rel_bbox_height",
+        "rel_bbox_area",
+        "bbox_aspect_ratio",
+        "log_bbox_area"
+    ],
+    "target_mapping": {
+        "0": "major_pothole",
+        "1": "medium_pothole",
+        "2": "minor_pothole"
+    },
+    "random_state": 42,
+    "limitations": "Model predicts manually annotated severity categories from image-derived object-detection features. The dataset does not contain road condition, traffic exposure, environmental factors, geographic road segment, maintenance history, or repair cost. Therefore, this is a pothole severity classification model, not a complete road-infrastructure deterioration prediction system."
+}
