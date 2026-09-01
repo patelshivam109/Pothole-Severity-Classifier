@@ -27,7 +27,7 @@ This project leverages machine learning to automatically classify pothole severi
 * **Core:** Python, Pandas, NumPy
 * **Machine Learning:** Scikit-Learn, Support Vector Machine (RBF Kernel), Gradient Boosting, XGBoost
 * **Data Visualization:** Plotly, Seaborn, Matplotlib
-* **Web Deployment:** Streamlit
+* **Web Deployment:** Streamlit.
 
 ## 📂 Project Architecture
 ```text
